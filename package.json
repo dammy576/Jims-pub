@@ -1,0 +1,16 @@
+{
+  "name": "jims-pub",
+  "private": true,
+  "description": "Jim's pub landing page + Cloudflare Worker chat proxy",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.131.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.147.0"
+  }
+}
