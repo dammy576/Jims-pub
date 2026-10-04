@@ -11,8 +11,13 @@ Plain HTML/CSS/JS, no frameworks — `index.html` sits at the repo root so GitHu
 | `worker/chat-worker.js` | Cloudflare Worker that proxies chat messages to the Anthropic API |
 | `wrangler.toml` | Worker config (name `jims-pub-chat`, rate-limit binding — no secrets) |
 
-> **Note:** The reservation form does not send anywhere yet — it only shows an on-page confirmation.
-> See the `TODO` comments in `index.html` and `script.js`.
+## Reservation form
+
+The form posts to Formspree (`https://formspree.io/f/mgaowbkn`) with `fetch`, so guests stay on the page,
+and Formspree emails each request to the pub. It sends `name`, `phone_or_email`, `party_size`, `date`, and `time`
+with the subject "New table request – Jim's", plus `_replyto` when the contact is an email address.
+A hidden `_gotcha` honeypot field filters out spam bots. Parties of 8+ are asked to call instead.
+To change the endpoint, edit `RESERVATION_CONFIG` in `script.js`.
 
 ## Chat widget setup
 

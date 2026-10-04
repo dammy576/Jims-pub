@@ -55,113 +55,211 @@ function initYear() {
 }
 
 /* Reservations ----------------------------------------------------------- */
+const RESERVATION_CONFIG = {
+  endpoint: "https://formspree.io/f/mgaowbkn",
+  subject: "New table request – Jim's",
+  successMessage: "Thanks! Your request is in. Jim's team will contact you to confirm your table.",
+  failureMessage: "Something went wrong — please call us at (718) 555-0142.",
+  timeoutMs: 15000,
+};
+
+// Field name -> label used in validation messages.
+const RESERVATION_FIELDS = [
+  { name: "name", label: "Name" },
+  { name: "phone_or_email", label: "Phone or email" },
+  { name: "party_size", label: "Party size" },
+  { name: "date", label: "Date" },
+  { name: "time", label: "Time" },
+];
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 function initReservationForm() {
   const form = document.getElementById("reserve-form");
-  const confirmBox = document.getElementById("reserve-confirm");
-  const errorBox = document.getElementById("reserve-error");
-  if (!form || !confirmBox || !errorBox) return;
+  const status = document.getElementById("reserve-status");
+  const submitBtn = document.getElementById("reserve-submit");
+  if (!form || !status || !submitBtn) return;
 
-  // Don't allow booking dates in the past.
-  const dateInput = form.elements.date;
-  const today = new Date();
-  const localISO = new Date(today.getTime() - today.getTimezoneOffset() * 60000)
-    .toISOString()
-    .slice(0, 10);
-  dateInput.min = localISO;
+  const submitLabel = submitBtn.textContent;
+  form.elements.date.min = todayISO();
+  let sending = false;
 
-  form.addEventListener("submit", (e) => {
+  // Clear a field's error state as soon as the guest changes it.
+  form.addEventListener("input", (e) => clearFieldError(e.target));
+  form.addEventListener("change", (e) => clearFieldError(e.target));
+
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    errorBox.hidden = true;
+    if (sending) return;
 
-    const fields = ["name", "contact", "party", "date", "time"];
-    let firstInvalid = null;
-
-    for (const name of fields) {
-      const el = form.elements[name];
-      const value = el.value.trim();
-      let valid = value !== "" && el.checkValidity();
-
-      if (name === "contact" && valid) valid = isPhoneOrEmail(value);
-
-      el.setAttribute("aria-invalid", String(!valid));
-      if (!valid && !firstInvalid) firstInvalid = el;
+    // Mobile date/time pickers can still hold focus when the button is tapped;
+    // blurring commits their value before we read it.
+    if (document.activeElement && form.contains(document.activeElement)) {
+      document.activeElement.blur();
     }
 
-    if (firstInvalid) {
-      errorBox.textContent =
-        firstInvalid.name === "contact"
-          ? "Please enter a valid phone number or email so we can reach you."
-          : "Please fill in all the fields so we can save your table.";
-      errorBox.hidden = false;
-      firstInvalid.focus();
+    const values = readReservationValues(form);
+    const problems = validateReservation(values);
+
+    form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
+    if (problems.length) {
+      for (const p of problems) form.elements[p.name].setAttribute("aria-invalid", "true");
+      showStatus(status, "error", problemsMessage(problems));
+      form.elements[problems[0].name].focus();
       return;
     }
 
-    const data = {
-      name: form.elements.name.value.trim(),
-      contact: form.elements.contact.value.trim(),
-      party: form.elements.party.value,
-      date: form.elements.date.value,
-      time: form.elements.time.value,
-    };
+    sending = true;
+    submitBtn.disabled = true;
+    submitBtn.textContent = "Sending…";
+    hideStatus(status);
 
-    // TODO: This does NOT send the reservation anywhere yet. It only shows an
-    // on-page confirmation. Hook this up to a real backend / booking service
-    // (and only show "confirmed" language once the pub has actually received it).
-    showReservationConfirmation(form, confirmBox, data);
+    try {
+      await sendReservation(values, form.elements._gotcha.value);
+      form.reset();
+      showStatus(status, "success", RESERVATION_CONFIG.successMessage);
+    } catch (err) {
+      // Keep everything the guest typed so they can try again or call.
+      showStatus(status, "error", RESERVATION_CONFIG.failureMessage);
+    } finally {
+      sending = false;
+      submitBtn.disabled = false;
+      submitBtn.textContent = submitLabel;
+    }
   });
+}
+
+function readReservationValues(form) {
+  const values = {};
+  for (const { name } of RESERVATION_FIELDS) {
+    values[name] = String(form.elements[name].value || "").trim();
+  }
+  return values;
+}
+
+/**
+ * Validates by looking at the actual values rather than the browser's
+ * checkValidity(), which on Android Chrome could reject a filled-in time
+ * (e.g. minute steps) and produce a misleading "fill in all fields" error.
+ */
+function validateReservation(v) {
+  const problems = [];
+  const missing = (name) => problems.push({ name, kind: "missing" });
+
+  if (!v.name) missing("name");
+
+  if (!v.phone_or_email) missing("phone_or_email");
+  else if (!isPhoneOrEmail(v.phone_or_email)) problems.push({ name: "phone_or_email", kind: "invalid" });
+
+  if (!v.party_size) missing("party_size");
+
+  if (!v.date) missing("date");
+  else if (!/^\d{4}-\d{2}-\d{2}$/.test(v.date)) problems.push({ name: "date", kind: "invalid" });
+  else if (v.date < todayISO()) problems.push({ name: "date", kind: "past" });
+
+  if (!v.time) missing("time");
+  else if (!/^\d{2}:\d{2}/.test(v.time)) problems.push({ name: "time", kind: "invalid" });
+
+  return problems;
+}
+
+function problemsMessage(problems) {
+  const label = (name) => RESERVATION_FIELDS.find((f) => f.name === name).label;
+  const missing = problems.filter((p) => p.kind === "missing").map((p) => label(p.name));
+  const messages = [];
+
+  if (missing.length) messages.push(`Please fill in: ${missing.join(", ")}.`);
+  for (const p of problems) {
+    if (p.kind === "invalid" && p.name === "phone_or_email") {
+      messages.push("Please enter a valid phone number or email so we can reach you.");
+    } else if (p.kind === "invalid") {
+      messages.push(`Please choose a valid ${label(p.name).toLowerCase()}.`);
+    } else if (p.kind === "past") {
+      messages.push("Please choose a date that's today or later.");
+    }
+  }
+  return messages.join(" ");
+}
+
+async function sendReservation(v, honeypot) {
+  const payload = {
+    name: v.name,
+    phone_or_email: v.phone_or_email,
+    party_size: v.party_size,
+    date: formatDate(v.date),
+    time: formatTime(v.time),
+    _subject: RESERVATION_CONFIG.subject,
+    _gotcha: honeypot,
+  };
+  if (EMAIL_RE.test(v.phone_or_email)) payload._replyto = v.phone_or_email;
+
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), RESERVATION_CONFIG.timeoutMs);
+  try {
+    const res = await fetch(RESERVATION_CONFIG.endpoint, {
+      method: "POST",
+      headers: { Accept: "application/json", "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      signal: controller.signal,
+    });
+    if (!res.ok) throw new Error(`Formspree responded ${res.status}`);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
+function clearFieldError(el) {
+  if (el && el.getAttribute && el.getAttribute("aria-invalid") === "true") {
+    el.removeAttribute("aria-invalid");
+  }
+}
+
+function showStatus(el, kind, message) {
+  // Render the pub's phone number as a tap-to-call link that doesn't wrap mid-number.
+  const phone = CHAT_CONFIG.phoneDisplay;
+  const at = message.indexOf(phone);
+  if (at === -1) {
+    el.textContent = message;
+  } else {
+    const link = document.createElement("a");
+    link.href = CHAT_CONFIG.phoneHref;
+    link.className = "nowrap";
+    link.textContent = phone;
+    el.replaceChildren(message.slice(0, at), link, message.slice(at + phone.length));
+  }
+  el.className = `form-status form-status-${kind}`;
+  el.hidden = false;
+}
+
+function hideStatus(el) {
+  el.hidden = true;
+  el.textContent = "";
 }
 
 function isPhoneOrEmail(value) {
-  const email = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   const digits = value.replace(/\D/g, "");
-  return email.test(value) || (digits.length >= 7 && digits.length <= 15);
+  return EMAIL_RE.test(value) || (digits.length >= 7 && digits.length <= 15 && !/[a-z@]/i.test(value));
 }
 
-function showReservationConfirmation(form, confirmBox, data) {
-  const when = formatDateTime(data.date, data.time);
-  const partyLabel = data.party === "1" ? "1 person" : `${data.party} people`;
-
-  confirmBox.replaceChildren();
-
-  const h3 = document.createElement("h3");
-  h3.textContent = `Thanks, ${data.name.split(" ")[0]}!`;
-
-  const p1 = document.createElement("p");
-  p1.textContent = `We've got your request for ${partyLabel} on ${when}.`;
-
-  const p2 = document.createElement("p");
-  p2.textContent = `We'll reach out at ${data.contact} to confirm. Need to change something? Give us a ring at ${CHAT_CONFIG.phoneDisplay}.`;
-
-  const again = document.createElement("button");
-  again.type = "button";
-  again.className = "btn btn-ghost";
-  again.textContent = "Make another request";
-  again.addEventListener("click", () => {
-    form.reset();
-    form.querySelectorAll("[aria-invalid]").forEach((el) => el.removeAttribute("aria-invalid"));
-    confirmBox.hidden = true;
-    form.hidden = false;
-    form.elements.name.focus();
-  });
-
-  const p3 = document.createElement("p");
-  p3.appendChild(again);
-
-  confirmBox.append(h3, p1, p2, p3);
-  form.hidden = true;
-  confirmBox.hidden = false;
-  confirmBox.setAttribute("tabindex", "-1");
-  confirmBox.focus();
+function todayISO() {
+  const now = new Date();
+  return new Date(now.getTime() - now.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
 }
 
-function formatDateTime(date, time) {
-  const [y, m, d] = date.split("-").map(Number);
-  const [hh, mm] = time.split(":").map(Number);
-  const dt = new Date(y, m - 1, d, hh, mm);
-  const datePart = dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric" });
-  const timePart = dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
-  return `${datePart} at ${timePart}`;
+// "2030-05-03" -> "Friday, May 3, 2030" (falls back to the raw value)
+function formatDate(iso) {
+  const [y, m, d] = iso.split("-").map(Number);
+  const dt = new Date(y, m - 1, d);
+  if (Number.isNaN(dt.getTime())) return iso;
+  return dt.toLocaleDateString("en-US", { weekday: "long", month: "long", day: "numeric", year: "numeric" });
+}
+
+// "19:30" -> "7:30 PM" (falls back to the raw value)
+function formatTime(hhmm) {
+  const [h, min] = hhmm.split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(min)) return hhmm;
+  const dt = new Date(2000, 0, 1, h, min);
+  return dt.toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
 }
 
 /* Chat widget ------------------------------------------------------------ */

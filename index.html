@@ -219,26 +219,21 @@
         <p class="center">Walk-ins are always welcome, but if you'd like a table locked in, let us know below.
           For parties of 8 or more, please call us.</p>
 
-        <!--
-          TODO: This form does NOT send anywhere yet. On submit it only shows an on-page
-          confirmation (see script.js -> initReservationForm). Before going live, wire it up to a
-          real backend, booking service, or form handler so the pub actually receives requests.
-        -->
-        <form class="reserve-form" id="reserve-form" novalidate>
+        <form class="reserve-form" id="reserve-form" action="https://formspree.io/f/mgaowbkn" method="POST" novalidate>
           <div class="field">
             <label for="res-name">Name</label>
             <input id="res-name" name="name" type="text" autocomplete="name" required>
           </div>
           <div class="field">
             <label for="res-contact">Phone or email</label>
-            <input id="res-contact" name="contact" type="text" autocomplete="email" required
+            <input id="res-contact" name="phone_or_email" type="text" autocomplete="email" required
                    placeholder="(718) 555-0123 or you@example.com">
           </div>
           <div class="field-row">
             <div class="field">
               <label for="res-party">Party size</label>
-              <select id="res-party" name="party" required>
-                <option value="" disabled selected>Choose</option>
+              <select id="res-party" name="party_size" required aria-describedby="res-party-hint">
+                <option value="" selected>Choose</option>
                 <option value="1">1 person</option>
                 <option value="2">2 people</option>
                 <option value="3">3 people</option>
@@ -247,6 +242,7 @@
                 <option value="6">6 people</option>
                 <option value="7">7 people</option>
               </select>
+              <p class="field-hint" id="res-party-hint">8 or more? Please call <a href="tel:+17185550142">(718) 555-0142</a>.</p>
             </div>
             <div class="field">
               <label for="res-date">Date</label>
@@ -254,14 +250,17 @@
             </div>
             <div class="field">
               <label for="res-time">Time</label>
-              <input id="res-time" name="time" type="time" required step="900">
+              <input id="res-time" name="time" type="time" required>
             </div>
           </div>
-          <p class="form-error" id="reserve-error" role="alert" hidden></p>
-          <button class="btn btn-primary btn-block" type="submit">Request a table</button>
+          <!-- Honeypot for spam bots: hidden from people, Formspree drops submissions that fill it. -->
+          <div class="hp-field" aria-hidden="true">
+            <label for="res-gotcha">Leave this field empty</label>
+            <input id="res-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+          </div>
+          <p class="form-status" id="reserve-status" role="status" aria-live="polite" hidden></p>
+          <button class="btn btn-primary btn-block" id="reserve-submit" type="submit">Request a table</button>
         </form>
-
-        <div class="reserve-confirm" id="reserve-confirm" role="status" aria-live="polite" hidden></div>
       </div>
     </section>
 
