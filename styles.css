@@ -486,6 +486,7 @@ p { margin: 0 0 1em; }
 
 /* Reservations ------------------------------------------------------------ */
 .reserve-form {
+  position: relative;
   margin-top: 2rem;
   background: var(--wood-800);
   border: 1px solid rgba(224, 163, 58, 0.2);
@@ -532,23 +533,45 @@ p { margin: 0 0 1em; }
 }
 .field [aria-invalid="true"] { border-color: var(--ember); }
 
-.form-error {
-  color: #ffb08a;
-  font-weight: 500;
-  margin: 0 0 1rem;
+.field-hint {
+  margin: 0.35rem 0 0;
+  font-size: 0.82rem;
+  color: var(--cream-muted);
 }
 
-.reserve-confirm {
-  margin-top: 2rem;
-  text-align: center;
-  background: var(--wood-700);
-  border: 1px solid var(--amber-500);
-  border-radius: var(--radius);
-  padding: 2.25rem 1.5rem;
-  box-shadow: var(--shadow);
+/* Honeypot: visually hidden and out of the tab order, but still submitted. */
+.hp-field {
+  position: absolute;
+  left: -10000px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
 }
-.reserve-confirm h3 { color: var(--amber-300); font-size: 1.7rem; }
-.reserve-confirm p:last-child { margin-bottom: 0; }
+
+.nowrap { white-space: nowrap; }
+
+.form-status {
+  margin: 0 0 1rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-weight: 500;
+}
+.form-status-success {
+  background: rgba(240, 185, 85, 0.14);
+  border: 1px solid var(--amber-500);
+  color: var(--amber-300);
+}
+.form-status-error {
+  background: rgba(217, 98, 43, 0.14);
+  border: 1px solid var(--ember);
+  color: #ffb08a;
+}
+
+.btn:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
 
 /* Visit ------------------------------------------------------------------- */
 .visit-grid {
