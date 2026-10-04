@@ -1,0 +1,17 @@
+# Cloudflare Worker config for Jim's chat proxy.
+# Do NOT put secrets here. Set the API key with:
+#   npx wrangler secret put ANTHROPIC_API_KEY
+name = "jims-pub-chat"
+main = "worker/chat-worker.js"
+compatibility_date = "2026-09-01"
+
+# Cloudflare Rate Limiting binding (shared across isolates, per Cloudflare location).
+# Only 10s or 60s periods are supported, so this is a burst guard; the
+# ~20 messages / 10 minutes rule is enforced in-memory in the Worker.
+[[ratelimits]]
+name = "CHAT_RATE_LIMITER"
+namespace_id = "1001"
+
+  [ratelimits.simple]
+  limit = 5
+  period = 60
