@@ -15,3 +15,14 @@ namespace_id = "1001"
   [ratelimits.simple]
   limit = 5
   period = 60
+
+# Preview builds (`wrangler preview`, e.g. Cloudflare's PR preview deployments).
+# Uses its own namespace_id so preview traffic never shares counters with
+# production's rate limiter above. Same limits as production.
+[[previews.ratelimits]]
+name = "CHAT_RATE_LIMITER"
+namespace_id = "2001"
+
+  [previews.ratelimits.simple]
+  limit = 5
+  period = 60
