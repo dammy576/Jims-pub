@@ -11,7 +11,7 @@
  * "please call us" fallback instead of making any network request.
  */
 const CHAT_CONFIG = {
-  apiEndpoint: "REPLACE_WITH_WORKER_URL",
+  apiEndpoint: "https://jims-pub-chat.muchimedia.workers.dev",
   maxMessageLength: 500, // must match MAX_USER_MESSAGE_CHARS in the Worker
   maxHistory: 10, // the Worker also only forwards the last 10 messages
   phoneDisplay: "(718) 555-0142",
