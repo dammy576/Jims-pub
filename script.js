@@ -92,9 +92,9 @@ function renderBusiness(b) {
     failureMessage: `Something went wrong — please call us at ${phone}.`,
   });
 
-  // <head>
-  document.title = (b.seo && b.seo.title) || name;
-  setMeta("description", (b.seo && b.seo.description) || "");
+  // <head>: title/description/link-preview tags are written in index.html (crawlers don't run
+  // this script). Just flag it in the console if they no longer match business.json.
+  checkHeadTags(b);
   applyTheme(b.theme || {}, name);
 
   // Simple text slots: <el data-text="path.to.value">
@@ -186,6 +186,29 @@ function renderBusiness(b) {
   document.getElementById("chat-window").setAttribute("aria-label", `Chat with ${name}`);
   setText("chat-title", `Ask ${name}`);
   setText("chat-subtitle", happy ? "Menu, hours, happy hour & more" : "Menu, hours & more");
+}
+
+function checkHeadTags(b) {
+  const seo = b.seo || {};
+  const expected = [
+    ["<title>", document.title, seo.title],
+    ['meta name="description"', metaContent('meta[name="description"]'), seo.description],
+    ['meta property="og:site_name"', metaContent('meta[property="og:site_name"]'), b.name],
+    ['meta property="og:title"', metaContent('meta[property="og:title"]'), `${b.name} — ${b.tagline}`],
+    ['meta property="og:description"', metaContent('meta[property="og:description"]'), seo.description],
+    ['meta name="twitter:title"', metaContent('meta[name="twitter:title"]'), `${b.name} — ${b.tagline}`],
+    ['meta name="twitter:description"', metaContent('meta[name="twitter:description"]'), seo.description],
+  ];
+  for (const [tag, actual, wanted] of expected) {
+    if (wanted && actual !== wanted) {
+      console.warn(`index.html ${tag} doesn't match business.json.\n  index.html: ${actual}\n  expected:   ${wanted}`);
+    }
+  }
+}
+
+function metaContent(selector) {
+  const meta = document.querySelector(selector);
+  return meta ? meta.getAttribute("content") : null;
 }
 
 function renderMenu(menu) {

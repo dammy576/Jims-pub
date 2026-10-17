@@ -4,7 +4,9 @@ A one-page landing site for **Jim's**, a (fictional) neighborhood pub in Brookly
 Plain HTML/CSS/JS, no frameworks — `index.html` sits at the repo root so GitHub Pages can serve it directly.
 
 **This repo is also a template for other small-business clients.** All business-specific content lives in
-`business.json`; the page and the chatbot are both built from it. See **[NEW-CLIENT.md](NEW-CLIENT.md)** for the
+`business.json`; the page and the chatbot are both built from it. (The only exception is the `<title>` and
+link-preview meta tags at the top of `index.html`, which are written out by hand so shared links show the
+business name.) See **[NEW-CLIENT.md](NEW-CLIENT.md)** for the
 step-by-step checklist.
 
 | File | What it is |
