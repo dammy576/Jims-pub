@@ -3,21 +3,41 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--
+    Link previews (texts, social media, search results) read these tags straight from this file,
+    without running script.js — so they're written out here, not filled in from business.json.
+    NEW CLIENT: update them to match business.json (name, tagline, seo.title, seo.description,
+    theme.background). See NEW-CLIENT.md.
+  -->
   <title>Jim's | Neighborhood Pub &amp; Wood-Fired Pizza in Brooklyn</title>
   <meta name="description" content="Jim's is a neighborhood pub in Brooklyn, NY serving wood-fired pizza, cold beer, and good cocktails. Happy hour Mon–Fri 4–6pm.">
   <meta name="theme-color" content="#1e130c">
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2730%27 fill=%27%23e0a33a%27/%3E%3Ctext x=%2732%27 y=%2744%27 font-size=%2734%27 text-anchor=%27middle%27 font-family=%27Georgia,serif%27 font-weight=%27bold%27 fill=%27%231e130c%27%3EJ%3C/text%3E%3C/svg%3E">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Jim's">
+  <meta property="og:title" content="Jim's — Cold beer, a hot oven, and a seat waiting for you.">
+  <meta property="og:description" content="Jim's is a neighborhood pub in Brooklyn, NY serving wood-fired pizza, cold beer, and good cocktails. Happy hour Mon–Fri 4–6pm.">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Jim's — Cold beer, a hot oven, and a seat waiting for you.">
+  <meta name="twitter:description" content="Jim's is a neighborhood pub in Brooklyn, NY serving wood-fired pizza, cold beer, and good cocktails. Happy hour Mon–Fri 4–6pm.">
+  <!-- The tab icon is drawn by script.js from the business name and theme colors. -->
+  <link rel="icon" href="data:,">
+  <link rel="preload" href="business.json" as="fetch" crossorigin>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,800&family=Work+Sans:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body>
+<!--
+  All business-specific content (name, menu, hours, contact, colors…) lives in business.json.
+  This file is only the layout; script.js fills it in. See NEW-CLIENT.md.
+-->
+<body class="is-loading">
+  <noscript><p class="load-error">Please turn on JavaScript to view this page.</p></noscript>
   <a class="skip-link" href="#main">Skip to content</a>
 
   <header class="site-header" id="top">
     <nav class="nav" aria-label="Main">
-      <a class="nav-brand" href="#top">Jim's</a>
+      <a class="nav-brand" href="#top" data-text="name"></a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-links">
         <span class="sr-only">Toggle menu</span>
         <span class="nav-toggle-bar"></span>
@@ -39,12 +59,12 @@
     <section class="hero" aria-labelledby="hero-title">
       <div class="hero-glow" aria-hidden="true"></div>
       <div class="hero-inner">
-        <p class="eyebrow">Brooklyn, NY &middot; Since forever, give or take</p>
-        <h1 id="hero-title" class="hero-title">Jim's</h1>
-        <p class="hero-tagline">Cold beer, a hot oven, and a seat waiting for you.</p>
-        <p class="hero-sub">Your neighborhood pub for wood-fired pizza, good pours, and better company.</p>
+        <p class="eyebrow" data-text="heroEyebrow"></p>
+        <h1 id="hero-title" class="hero-title" data-text="name"></h1>
+        <p class="hero-tagline" data-text="tagline"></p>
+        <p class="hero-sub" data-text="heroIntro"></p>
         <div class="hero-actions">
-          <a class="btn btn-primary" href="#reserve">Book a table</a>
+          <a class="btn btn-primary" href="#reserve" data-text="reservations.bookButtonLabel"></a>
           <a class="btn btn-ghost" href="#menu">See the menu</a>
         </div>
       </div>
@@ -53,34 +73,12 @@
     <!-- ABOUT -->
     <section class="section about" id="about" aria-labelledby="about-title">
       <div class="container about-grid">
-        <div>
-          <p class="eyebrow">About Jim's</p>
-          <h2 id="about-title" class="section-title">Pull up a stool. Stay a while.</h2>
-          <p>
-            Jim's is the kind of place where the bartender remembers your order and the regulars
-            save you a seat. Worn wood, warm light, a good jukebox, and no pretense &mdash; just a
-            neighborhood pub doing simple things well.
-          </p>
-          <p>
-            The heart of the room is our wood-fired oven. Every pie gets a blistered, chewy crust
-            and a kiss of smoke in about ninety seconds flat. Pair it with a cold pint and you've
-            got the best night of your week.
-          </p>
+        <div id="about-text">
+          <p class="eyebrow" id="about-eyebrow"></p>
+          <h2 id="about-title" class="section-title" data-text="about.heading"></h2>
+          <!-- about.paragraphs are added here -->
         </div>
-        <ul class="about-points">
-          <li>
-            <span class="about-icon" aria-hidden="true">&#9832;</span>
-            <div><strong>Wood-fired, always</strong><span>Oak-burning oven running at 850&deg;F.</span></div>
-          </li>
-          <li>
-            <span class="about-icon" aria-hidden="true">&#9733;</span>
-            <div><strong>Local pours</strong><span>Brooklyn beers on draft, rotating seasonals.</span></div>
-          </li>
-          <li>
-            <span class="about-icon" aria-hidden="true">&#9829;</span>
-            <div><strong>Everyone's welcome</strong><span>Families early, night owls late.</span></div>
-          </li>
-        </ul>
+        <ul class="about-points" id="about-points"></ul>
       </div>
     </section>
 
@@ -88,96 +86,18 @@
     <section class="section menu" id="menu" aria-labelledby="menu-title">
       <div class="container">
         <p class="eyebrow center">The Menu</p>
-        <h2 id="menu-title" class="section-title center">Eat, drink, repeat</h2>
+        <h2 id="menu-title" class="section-title center" data-text="menu.heading"></h2>
 
-        <!-- Pizza -->
-        <div class="pizza-block">
-          <h3 class="menu-heading"><span>Wood-Fired Pizza</span></h3>
-          <p class="menu-note center">12-inch pies, hand-stretched daily and fired in our oak-burning oven.</p>
-          <div class="pizza-grid">
-            <article class="pizza-card">
-              <div class="pizza-top">
-                <h4>Margherita</h4>
-                <span class="price">$16</span>
-              </div>
-              <p>San Marzano tomato, fresh mozzarella, basil, and good olive oil &mdash; the classic.</p>
-            </article>
-            <article class="pizza-card">
-              <div class="pizza-top">
-                <h4>Pepperoni</h4>
-                <span class="price">$18</span>
-              </div>
-              <p>Cup-and-char pepperoni over tomato and mozzarella, finished with oregano.</p>
-            </article>
-            <article class="pizza-card pizza-card-special">
-              <span class="badge">House favorite</span>
-              <div class="pizza-top">
-                <h4>Jim's Special</h4>
-                <span class="price">$21</span>
-              </div>
-              <p>Spicy soppressata, whipped ricotta, roasted garlic, and a drizzle of hot honey.</p>
-            </article>
-          </div>
+        <!-- Featured section (e.g. pizzas) -->
+        <div class="pizza-block" id="menu-featured">
+          <h3 class="menu-heading"><span data-text="menu.featured.title"></span></h3>
+          <p class="menu-note center" data-text="menu.featured.note"></p>
+          <div class="pizza-grid" id="menu-featured-items"></div>
         </div>
 
         <div class="menu-columns">
-          <!-- Food -->
-          <div class="menu-col">
-            <h3 class="menu-heading"><span>Food</span></h3>
-            <ul class="menu-list">
-              <li>
-                <div class="menu-item-row"><span class="item">Garlic Knots</span><span class="dots" aria-hidden="true"></span><span class="price">$8</span></div>
-                <p>Straight from the oven, with marinara for dunking.</p>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Wood-Fired Wings</span><span class="dots" aria-hidden="true"></span><span class="price">$14</span></div>
-                <p>Charred, then tossed in Calabrian chili butter.</p>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Meatball Sliders</span><span class="dots" aria-hidden="true"></span><span class="price">$13</span></div>
-                <p>Three sliders, Sunday sauce, melted provolone.</p>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Caesar Salad</span><span class="dots" aria-hidden="true"></span><span class="price">$12</span></div>
-                <p>Little gem, parm, garlic breadcrumbs.</p>
-              </li>
-            </ul>
-          </div>
-
-          <!-- Drinks -->
-          <div class="menu-col">
-            <h3 class="menu-heading"><span>Beer</span></h3>
-            <ul class="menu-list">
-              <li>
-                <div class="menu-item-row"><span class="item">Brooklyn Lager</span><span class="dots" aria-hidden="true"></span><span class="price">$8</span></div>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Jim's House IPA</span><span class="dots" aria-hidden="true"></span><span class="price">$8</span></div>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Guinness</span><span class="dots" aria-hidden="true"></span><span class="price">$9</span></div>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Seasonal Cider</span><span class="dots" aria-hidden="true"></span><span class="price">$8</span></div>
-              </li>
-            </ul>
-
-            <h3 class="menu-heading"><span>Cocktails</span></h3>
-            <ul class="menu-list">
-              <li>
-                <div class="menu-item-row"><span class="item">Old Fashioned</span><span class="dots" aria-hidden="true"></span><span class="price">$14</span></div>
-                <p>Rye, demerara, Angostura, orange peel.</p>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Negroni</span><span class="dots" aria-hidden="true"></span><span class="price">$13</span></div>
-                <p>Gin, Campari, sweet vermouth.</p>
-              </li>
-              <li>
-                <div class="menu-item-row"><span class="item">Jim's Mule</span><span class="dots" aria-hidden="true"></span><span class="price">$12</span></div>
-                <p>Vodka, house ginger beer, lime.</p>
-              </li>
-            </ul>
-          </div>
+          <div class="menu-col" id="menu-food"></div>
+          <div class="menu-col" id="menu-drinks"></div>
         </div>
       </div>
     </section>
@@ -187,26 +107,17 @@
       <div class="container hours-grid">
         <div>
           <p class="eyebrow">Hours</p>
-          <h2 id="hours-title" class="section-title">Come on in</h2>
+          <h2 id="hours-title" class="section-title" data-text="hours.heading"></h2>
           <table class="hours-table">
-            <tbody>
-              <tr><th scope="row">Monday &ndash; Thursday</th><td>4pm &ndash; 12am</td></tr>
-              <tr><th scope="row">Friday</th><td>4pm &ndash; 2am</td></tr>
-              <tr><th scope="row">Saturday</th><td>12pm &ndash; 2am</td></tr>
-              <tr><th scope="row">Sunday</th><td>12pm &ndash; 11pm</td></tr>
-            </tbody>
+            <tbody id="hours-rows"></tbody>
           </table>
-          <p class="small-note">Kitchen closes one hour before the bar.</p>
+          <p class="small-note" data-text="hours.note"></p>
         </div>
-        <div class="happy-hour">
+        <div class="happy-hour" id="happy-hour">
           <p class="eyebrow">Happy Hour</p>
-          <h3>Mon &ndash; Fri &middot; 4&ndash;6pm</h3>
-          <ul>
-            <li>$2 off all draft beer</li>
-            <li>$10 house cocktails</li>
-            <li>$12 Margherita pizzas</li>
-          </ul>
-          <p class="small-note">At the bar and high-tops. Can't be combined with other offers.</p>
+          <h3 data-text="happyHour.when"></h3>
+          <ul id="happy-hour-deals"></ul>
+          <p class="small-note" data-text="happyHour.note"></p>
         </div>
       </div>
     </section>
@@ -215,34 +126,26 @@
     <section class="section reserve" id="reserve" aria-labelledby="reserve-title">
       <div class="container narrow">
         <p class="eyebrow center">Reservations</p>
-        <h2 id="reserve-title" class="section-title center">Save me a seat</h2>
-        <p class="center">Walk-ins are always welcome, but if you'd like a table locked in, let us know below.
-          For parties of 8 or more, please call us.</p>
+        <h2 id="reserve-title" class="section-title center" data-text="reservations.heading"></h2>
+        <p class="center" id="reserve-intro"></p>
 
-        <form class="reserve-form" id="reserve-form" action="https://formspree.io/f/mgaowbkn" method="POST" novalidate>
+        <form class="reserve-form" id="reserve-form" method="POST" novalidate>
           <div class="field">
             <label for="res-name">Name</label>
             <input id="res-name" name="name" type="text" autocomplete="name" required>
           </div>
           <div class="field">
             <label for="res-contact">Phone or email</label>
-            <input id="res-contact" name="phone_or_email" type="text" autocomplete="email" required
-                   placeholder="(718) 555-0123 or you@example.com">
+            <input id="res-contact" name="phone_or_email" type="text" autocomplete="email" required>
           </div>
           <div class="field-row">
             <div class="field">
               <label for="res-party">Party size</label>
               <select id="res-party" name="party_size" required aria-describedby="res-party-hint">
                 <option value="" selected>Choose</option>
-                <option value="1">1 person</option>
-                <option value="2">2 people</option>
-                <option value="3">3 people</option>
-                <option value="4">4 people</option>
-                <option value="5">5 people</option>
-                <option value="6">6 people</option>
-                <option value="7">7 people</option>
+                <!-- 1…reservations.maxPartySize are added here -->
               </select>
-              <p class="field-hint" id="res-party-hint">8 or more? Please call <a href="tel:+17185550142">(718) 555-0142</a>.</p>
+              <p class="field-hint" id="res-party-hint"></p>
             </div>
             <div class="field">
               <label for="res-date">Date</label>
@@ -259,7 +162,7 @@
             <input id="res-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
           </div>
           <p class="form-status" id="reserve-status" role="status" aria-live="polite" hidden></p>
-          <button class="btn btn-primary btn-block" id="reserve-submit" type="submit">Request a table</button>
+          <button class="btn btn-primary btn-block" id="reserve-submit" type="submit" data-text="reservations.submitButtonLabel"></button>
         </form>
       </div>
     </section>
@@ -269,22 +172,16 @@
       <div class="container visit-grid">
         <div>
           <p class="eyebrow">Find Us</p>
-          <h2 id="visit-title" class="section-title">Right around the corner</h2>
-          <address>
-            <strong>Jim's</strong><br>
-            214 Hearth Street<br>
-            Brooklyn, NY 11215
-          </address>
-          <p>
-            <a class="contact-link" href="tel:+17185550142">(718) 555-0142</a><br>
-            <a class="contact-link" href="mailto:hello@jims-pub.example">hello@jims-pub.example</a>
-          </p>
-          <p class="small-note">Two blocks from the 7th Ave stop. Street parking is a Brooklyn adventure.</p>
+          <h2 id="visit-title" class="section-title" data-text="contact.heading"></h2>
+          <address id="visit-address"></address>
+          <p id="visit-contact"></p>
+          <p id="visit-social" hidden></p>
+          <p class="small-note" data-text="contact.directions"></p>
         </div>
         <div class="map-card" aria-hidden="true">
           <div class="map-street map-street-h"></div>
           <div class="map-street map-street-v"></div>
-          <div class="map-pin"><span>Jim's</span></div>
+          <div class="map-pin"><span data-text="name"></span></div>
         </div>
       </div>
     </section>
@@ -292,8 +189,8 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>&copy; <span id="year"></span> Jim's &middot; Brooklyn, NY</p>
-      <p class="demo-note">Demo concept &mdash; Jim's is a fictional pub. Address, phone, and menu are for illustration only.</p>
+      <p>&copy; <span id="year"></span> <span id="footer-place"></span></p>
+      <p class="demo-note" data-text="demoNote" hidden></p>
     </div>
   </footer>
 
@@ -303,14 +200,14 @@
       <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true" focusable="false">
         <path fill="currentColor" d="M4 4h16a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2H9l-5 4v-4H4a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z"/>
       </svg>
-      <span class="sr-only">Chat with Jim's</span>
+      <span class="sr-only" id="chat-toggle-label"></span>
     </button>
 
-    <section class="chat-window" id="chat-window" role="dialog" aria-label="Chat with Jim's" hidden>
+    <section class="chat-window" id="chat-window" role="dialog" hidden>
       <header class="chat-header">
         <div>
-          <strong>Ask Jim's</strong>
-          <span>Menu, hours, happy hour &amp; more</span>
+          <strong id="chat-title"></strong>
+          <span id="chat-subtitle"></span>
         </div>
         <button class="chat-close" id="chat-close" type="button" aria-label="Close chat">&times;</button>
       </header>
