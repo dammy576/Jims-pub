@@ -3,12 +3,17 @@
 A one-page landing site for **Jim's**, a (fictional) neighborhood pub in Brooklyn, NY.
 Plain HTML/CSS/JS, no frameworks — `index.html` sits at the repo root so GitHub Pages can serve it directly.
 
+**This repo is also a template for other small-business clients.** All business-specific content lives in
+`business.json`; the page and the chatbot are both built from it. See **[NEW-CLIENT.md](NEW-CLIENT.md)** for the
+step-by-step checklist.
+
 | File | What it is |
 |---|---|
-| `index.html` | The page: hero, about, menu, hours/happy hour, reservation form, location, chat widget |
+| `business.json` | **All business content**: name, text, contact, hours, happy hour, menu, reservations, colors, demo flag |
+| `index.html` | The page layout: hero, about, menu, hours/happy hour, reservation form, location, chat widget |
 | `styles.css` | All styling (dark wood + amber theme, mobile-first breakpoints) |
-| `script.js` | Mobile nav, reservation form, and the chat widget (`CHAT_CONFIG`) |
-| `worker/chat-worker.js` | Cloudflare Worker that proxies chat messages to the Anthropic API |
+| `script.js` | Fills the page from `business.json`, plus the mobile nav, reservation form, and chat widget (`CHAT_CONFIG`) |
+| `worker/chat-worker.js` | Cloudflare Worker that proxies chat messages to the Anthropic API (system prompt built from `business.json`) |
 | `wrangler.toml` | Worker config (name `jims-pub-chat`, rate-limit binding — no secrets) |
 
 ## Reservation form
@@ -16,8 +21,8 @@ Plain HTML/CSS/JS, no frameworks — `index.html` sits at the repo root so GitHu
 The form posts to Formspree (`https://formspree.io/f/mgaowbkn`) with `fetch`, so guests stay on the page,
 and Formspree emails each request to the pub. It sends `name`, `phone_or_email`, `party_size`, `date`, and `time`
 with the subject "New table request – Jim's", plus `_replyto` when the contact is an email address.
-A hidden `_gotcha` honeypot field filters out spam bots. Parties of 8+ are asked to call instead.
-To change the endpoint, edit `RESERVATION_CONFIG` in `script.js`.
+A hidden `_gotcha` honeypot field filters out spam bots. Parties larger than `reservations.maxPartySize`
+(7 for Jim's, so 8+) are asked to call instead. The endpoint and party size are set in `business.json` → `reservations`.
 
 ## Chat widget setup
 
@@ -54,9 +59,11 @@ add that origin to `ALLOWED_ORIGINS` at the top of `worker/chat-worker.js` — o
 
 ### 3. Updating the bot's knowledge
 
-Everything the bot knows lives in `SYSTEM_PROMPT` in **`worker/chat-worker.js`** (kept server-side, not in the browser).
-To change the menu, prices, hours, happy hour, address, or the hand-off rules, edit that prompt and run
-`npx wrangler deploy` again. Keep it in sync with `index.html` so the bot and the page always agree.
+The bot's facts (menu, prices, hours, happy hour, address, phone…) come from **`business.json`**, which is bundled
+into the Worker when it's built — so the bot and the page always agree. After editing `business.json`, run
+`npx wrangler deploy` again (or let Cloudflare's Git integration rebuild it) so the bot picks up the changes.
+The rules every bot follows (hand-offs to staff, declining off-topic questions, never inventing items or prices)
+are in `buildSystemPrompt` in `worker/chat-worker.js`.
 
 ### Worker safeguards
 
@@ -65,3 +72,8 @@ To change the menu, prices, hours, happy hour, address, or the hand-off rules, e
   Cloudflare Rate Limiting binding as a 5-per-minute burst guard (the binding only supports 10s/60s periods).
 - User messages over 500 characters are rejected; only the last 10 messages are forwarded.
 - Uses `claude-haiku-4-5` with `max_tokens: 400`. Errors come back as clean JSON; upstream errors and the key are never exposed.
+
+## Previewing locally
+
+The page loads `business.json` with `fetch`, so opening `index.html` straight from disk (`file://`) won't work.
+Run a tiny local server from the repo root instead, e.g. `python3 -m http.server 8000`, then open http://localhost:8000.

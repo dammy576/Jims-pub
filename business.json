@@ -1,0 +1,133 @@
+{
+  "demo": true,
+  "demoNote": "Demo concept — Jim's is a fictional pub. Address, phone, and menu are for illustration only.",
+
+  "name": "Jim's",
+  "type": "neighborhood pub",
+  "knownFor": "wood-fired pizza",
+  "tagline": "Cold beer, a hot oven, and a seat waiting for you.",
+  "heroEyebrow": "Brooklyn, NY · Since forever, give or take",
+  "heroIntro": "Your neighborhood pub for wood-fired pizza, good pours, and better company.",
+
+  "seo": {
+    "title": "Jim's | Neighborhood Pub & Wood-Fired Pizza in Brooklyn",
+    "description": "Jim's is a neighborhood pub in Brooklyn, NY serving wood-fired pizza, cold beer, and good cocktails. Happy hour Mon–Fri 4–6pm."
+  },
+
+  "theme": {
+    "background": "#1e130c",
+    "primary": "#e0a33a",
+    "accent": "#d9622b"
+  },
+
+  "about": {
+    "heading": "Pull up a stool. Stay a while.",
+    "paragraphs": [
+      "Jim's is the kind of place where the bartender remembers your order and the regulars save you a seat. Worn wood, warm light, a good jukebox, and no pretense — just a neighborhood pub doing simple things well.",
+      "The heart of the room is our wood-fired oven. Every pie gets a blistered, chewy crust and a kiss of smoke in about ninety seconds flat. Pair it with a cold pint and you've got the best night of your week."
+    ],
+    "highlights": [
+      { "icon": "♨", "title": "Wood-fired, always", "text": "Oak-burning oven running at 850°F." },
+      { "icon": "★", "title": "Local pours", "text": "Brooklyn beers on draft, rotating seasonals." },
+      { "icon": "♥", "title": "Everyone's welcome", "text": "Families early, night owls late." }
+    ]
+  },
+
+  "contact": {
+    "heading": "Right around the corner",
+    "street": "214 Hearth Street",
+    "city": "Brooklyn",
+    "region": "NY",
+    "postalCode": "11215",
+    "phone": "(718) 555-0142",
+    "email": "hello@jims-pub.example",
+    "directions": "Two blocks from the 7th Ave stop. Street parking is a Brooklyn adventure."
+  },
+
+  "social": [
+    { "label": "Instagram", "url": "" },
+    { "label": "Facebook", "url": "" }
+  ],
+
+  "hours": {
+    "heading": "Come on in",
+    "schedule": [
+      { "days": "Monday – Thursday", "time": "4pm – 12am" },
+      { "days": "Friday", "time": "4pm – 2am" },
+      { "days": "Saturday", "time": "12pm – 2am" },
+      { "days": "Sunday", "time": "12pm – 11pm" }
+    ],
+    "note": "Kitchen closes one hour before the bar."
+  },
+
+  "happyHour": {
+    "when": "Mon – Fri · 4–6pm",
+    "deals": [
+      "$2 off all draft beer",
+      "$10 house cocktails",
+      "$12 Margherita pizzas"
+    ],
+    "note": "At the bar and high-tops. Can't be combined with other offers."
+  },
+
+  "menu": {
+    "heading": "Eat, drink, repeat",
+    "featured": {
+      "title": "Wood-Fired Pizza",
+      "note": "12-inch pies, hand-stretched daily and fired in our oak-burning oven.",
+      "items": [
+        { "name": "Margherita", "description": "San Marzano tomato, fresh mozzarella, basil, and good olive oil — the classic.", "price": "$16" },
+        { "name": "Pepperoni", "description": "Cup-and-char pepperoni over tomato and mozzarella, finished with oregano.", "price": "$18" },
+        { "name": "Jim's Special", "description": "Spicy soppressata, whipped ricotta, roasted garlic, and a drizzle of hot honey.", "price": "$21", "badge": "House favorite" }
+      ]
+    },
+    "food": [
+      {
+        "title": "Food",
+        "items": [
+          { "name": "Garlic Knots", "description": "Straight from the oven, with marinara for dunking.", "price": "$8" },
+          { "name": "Wood-Fired Wings", "description": "Charred, then tossed in Calabrian chili butter.", "price": "$14" },
+          { "name": "Meatball Sliders", "description": "Three sliders, Sunday sauce, melted provolone.", "price": "$13" },
+          { "name": "Caesar Salad", "description": "Little gem, parm, garlic breadcrumbs.", "price": "$12" }
+        ]
+      }
+    ],
+    "drinks": [
+      {
+        "title": "Beer",
+        "items": [
+          { "name": "Brooklyn Lager", "description": "", "price": "$8" },
+          { "name": "Jim's House IPA", "description": "", "price": "$8" },
+          { "name": "Guinness", "description": "", "price": "$9" },
+          { "name": "Seasonal Cider", "description": "", "price": "$8" }
+        ]
+      },
+      {
+        "title": "Cocktails",
+        "items": [
+          { "name": "Old Fashioned", "description": "Rye, demerara, Angostura, orange peel.", "price": "$14" },
+          { "name": "Negroni", "description": "Gin, Campari, sweet vermouth.", "price": "$13" },
+          { "name": "Jim's Mule", "description": "Vodka, house ginger beer, lime.", "price": "$12" }
+        ]
+      }
+    ]
+  },
+
+  "reservations": {
+    "heading": "Save me a seat",
+    "intro": "Walk-ins are always welcome, but if you'd like a table locked in, let us know below.",
+    "formspreeEndpoint": "https://formspree.io/f/mgaowbkn",
+    "maxPartySize": 7,
+    "bookButtonLabel": "Book a table",
+    "submitButtonLabel": "Request a table",
+    "contactPlaceholder": "(718) 555-0123 or you@example.com"
+  },
+
+  "chat": {
+    "voice": "like a friendly bartender",
+    "greeting": "Hey there, welcome to Jim's! Ask me about the menu, prices, hours, happy hour, or how to grab a table.",
+    "extraFacts": [
+      "Walk-ins are always welcome."
+    ]
+  }
+}

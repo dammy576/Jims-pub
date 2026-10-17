@@ -1,6 +1,6 @@
 /* ==========================================================================
-   Jim's — neighborhood pub & wood-fired pizza
-   Dark wood tones, warm amber/gold accents.
+   Small-business landing page — default theme: dark wood tones with amber accents
+   (colors can be overridden per client in business.json -> theme).
    ========================================================================== */
 
 :root {
@@ -13,6 +13,15 @@
   --amber-400: #f0b955;
   --amber-300: #f6d08a;
   --ember: #d9622b;
+  --wood-950: #150d08;
+  --accent-light: #ffb08a;
+  /* RGB channels of the theme colors, for translucent rgba(var(--x), a) uses.
+     script.js updates these (and the colors above) from business.json -> theme. */
+  --bg-rgb: 30, 19, 12;
+  --primary-rgb: 224, 163, 58;
+  --primary-light-rgb: 240, 185, 85;
+  --primary-pale-rgb: 246, 208, 138;
+  --accent-rgb: 217, 98, 43;
   --cream: #f5e9d6;
   --cream-muted: #d8c6aa;
   --ink: #1a120b;
@@ -54,6 +63,20 @@ body {
     repeating-linear-gradient(88deg, rgba(0, 0, 0, 0.08) 0 1px, transparent 1px 23px);
   -webkit-font-smoothing: antialiased;
 }
+
+/* Content is filled in from business.json; hide the empty layout until then. */
+body.is-loading { visibility: hidden; }
+/* No color transitions while the theme from business.json is being applied. */
+body.is-loading *, body.is-loading *::before, body.is-loading *::after { transition: none !important; }
+
+.load-error {
+  visibility: visible; /* also shown while body is hidden (e.g. <noscript>) */
+  margin: 0;
+  padding: 2rem 1.25rem;
+  text-align: center;
+  color: var(--cream);
+}
+body.load-failed > :not(.load-error) { display: none; }
 
 img { max-width: 100%; display: block; }
 
@@ -149,7 +172,7 @@ p { margin: 0 0 1em; }
   border-color: var(--amber-500);
   color: var(--amber-300);
 }
-.btn-ghost:hover { background: rgba(224, 163, 58, 0.12); color: var(--amber-300); }
+.btn-ghost:hover { background: rgba(var(--primary-rgb), 0.12); color: var(--amber-300); }
 
 .btn-block { width: 100%; }
 
@@ -158,9 +181,9 @@ p { margin: 0 0 1em; }
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(30, 19, 12, 0.92);
+  background: rgba(var(--bg-rgb), 0.92);
   backdrop-filter: blur(6px);
-  border-bottom: 1px solid rgba(224, 163, 58, 0.18);
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.18);
 }
 
 .nav {
@@ -220,7 +243,7 @@ p { margin: 0 0 1em; }
     flex-direction: column;
     gap: 0;
     background: var(--wood-800);
-    border-bottom: 1px solid rgba(224, 163, 58, 0.2);
+    border-bottom: 1px solid rgba(var(--primary-rgb), 0.2);
     display: none;
   }
   .nav-links.open { display: flex; }
@@ -244,8 +267,8 @@ p { margin: 0 0 1em; }
   overflow: hidden;
   padding: 5rem 1.25rem;
   background:
-    radial-gradient(ellipse at 50% 115%, rgba(217, 98, 43, 0.45), transparent 55%),
-    radial-gradient(ellipse at 50% 100%, rgba(224, 163, 58, 0.25), transparent 65%),
+    radial-gradient(ellipse at 50% 115%, rgba(var(--accent-rgb), 0.45), transparent 55%),
+    radial-gradient(ellipse at 50% 100%, rgba(var(--primary-rgb), 0.25), transparent 65%),
     linear-gradient(180deg, var(--wood-900) 0%, var(--wood-800) 60%, var(--wood-700) 100%);
 }
 
@@ -256,7 +279,7 @@ p { margin: 0 0 1em; }
   width: 520px;
   height: 360px;
   transform: translateX(-50%);
-  background: radial-gradient(circle, rgba(246, 208, 138, 0.35), transparent 70%);
+  background: radial-gradient(circle, rgba(var(--primary-pale-rgb), 0.35), transparent 70%);
   filter: blur(20px);
   animation: flicker 4s ease-in-out infinite alternate;
   pointer-events: none;
@@ -275,7 +298,7 @@ p { margin: 0 0 1em; }
   font-weight: 800;
   letter-spacing: -0.02em;
   color: var(--amber-400);
-  text-shadow: 0 4px 30px rgba(224, 163, 58, 0.35);
+  text-shadow: 0 4px 30px rgba(var(--primary-rgb), 0.35);
   margin-bottom: 0.15em;
 }
 
@@ -322,7 +345,7 @@ p { margin: 0 0 1em; }
   gap: 1rem;
   align-items: flex-start;
   background: var(--wood-700);
-  border: 1px solid rgba(224, 163, 58, 0.15);
+  border: 1px solid rgba(var(--primary-rgb), 0.15);
   border-radius: var(--radius);
   padding: 1.1rem 1.25rem;
 }
@@ -333,7 +356,7 @@ p { margin: 0 0 1em; }
   width: 2.4rem; height: 2.4rem;
   display: grid; place-items: center;
   border-radius: 50%;
-  background: rgba(224, 163, 58, 0.15);
+  background: rgba(var(--primary-rgb), 0.15);
   color: var(--amber-400) !important;
   font-size: 1.2rem !important;
 }
@@ -352,7 +375,7 @@ p { margin: 0 0 1em; }
   content: "";
   flex: 1;
   height: 1px;
-  background: linear-gradient(90deg, transparent, rgba(224, 163, 58, 0.5), transparent);
+  background: linear-gradient(90deg, transparent, rgba(var(--primary-rgb), 0.5), transparent);
 }
 
 .menu-note { color: var(--cream-muted); margin-bottom: 1.5rem; }
@@ -366,7 +389,7 @@ p { margin: 0 0 1em; }
 .pizza-card {
   position: relative;
   background: linear-gradient(160deg, var(--wood-700), var(--wood-800));
-  border: 1px solid rgba(224, 163, 58, 0.2);
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
   border-radius: var(--radius);
   padding: 1.5rem;
   box-shadow: var(--shadow);
@@ -376,7 +399,7 @@ p { margin: 0 0 1em; }
 .pizza-card-special {
   border-color: var(--amber-500);
   background:
-    radial-gradient(circle at 100% 0%, rgba(224, 163, 58, 0.18), transparent 60%),
+    radial-gradient(circle at 100% 0%, rgba(var(--primary-rgb), 0.18), transparent 60%),
     linear-gradient(160deg, var(--wood-600), var(--wood-800));
 }
 
@@ -466,7 +489,7 @@ p { margin: 0 0 1em; }
 
 .happy-hour {
   background:
-    radial-gradient(circle at 0% 0%, rgba(240, 185, 85, 0.25), transparent 60%),
+    radial-gradient(circle at 0% 0%, rgba(var(--primary-light-rgb), 0.25), transparent 60%),
     var(--wood-600);
   border: 1px solid var(--amber-500);
   border-radius: var(--radius);
@@ -489,7 +512,7 @@ p { margin: 0 0 1em; }
   position: relative;
   margin-top: 2rem;
   background: var(--wood-800);
-  border: 1px solid rgba(224, 163, 58, 0.2);
+  border: 1px solid rgba(var(--primary-rgb), 0.2);
   border-radius: var(--radius);
   padding: 2rem;
   box-shadow: var(--shadow);
@@ -529,7 +552,7 @@ p { margin: 0 0 1em; }
 .chat-form textarea:focus {
   outline: none;
   border-color: var(--amber-400);
-  box-shadow: 0 0 0 3px rgba(240, 185, 85, 0.25);
+  box-shadow: 0 0 0 3px rgba(var(--primary-light-rgb), 0.25);
 }
 .field [aria-invalid="true"] { border-color: var(--ember); }
 
@@ -557,14 +580,14 @@ p { margin: 0 0 1em; }
   font-weight: 500;
 }
 .form-status-success {
-  background: rgba(240, 185, 85, 0.14);
+  background: rgba(var(--primary-light-rgb), 0.14);
   border: 1px solid var(--amber-500);
   color: var(--amber-300);
 }
 .form-status-error {
-  background: rgba(217, 98, 43, 0.14);
+  background: rgba(var(--accent-rgb), 0.14);
   border: 1px solid var(--ember);
-  color: #ffb08a;
+  color: var(--accent-light);
 }
 
 .btn:disabled {
@@ -598,7 +621,7 @@ address {
   aspect-ratio: 4 / 3;
   border-radius: var(--radius);
   overflow: hidden;
-  border: 1px solid rgba(224, 163, 58, 0.25);
+  border: 1px solid rgba(var(--primary-rgb), 0.25);
   background:
     linear-gradient(rgba(245, 233, 214, 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
     linear-gradient(90deg, rgba(245, 233, 214, 0.05) 1px, transparent 1px) 0 0 / 40px 40px,
@@ -630,8 +653,8 @@ address {
 
 /* Footer ------------------------------------------------------------------ */
 .site-footer {
-  background: #150d08;
-  border-top: 1px solid rgba(224, 163, 58, 0.18);
+  background: var(--wood-950);
+  border-top: 1px solid rgba(var(--primary-rgb), 0.18);
   padding: 2rem 0 6rem;
   font-size: 0.9rem;
   color: var(--cream-muted);
@@ -680,7 +703,7 @@ address {
   display: flex;
   flex-direction: column;
   background: var(--wood-800);
-  border: 1px solid rgba(224, 163, 58, 0.35);
+  border: 1px solid rgba(var(--primary-rgb), 0.35);
   border-radius: 18px;
   box-shadow: 0 20px 50px rgba(0, 0, 0, 0.55);
   overflow: hidden;
@@ -693,7 +716,7 @@ address {
   align-items: center;
   padding: 0.9rem 1rem;
   background: var(--wood-600);
-  border-bottom: 1px solid rgba(224, 163, 58, 0.25);
+  border-bottom: 1px solid rgba(var(--primary-rgb), 0.25);
 }
 .chat-header strong {
   display: block;
